@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Drishthi</string>
+
+    <string name="title_home">Home</string>
+    <string name="title_orders">Orders</string>
+    <string name="title_wallet">Wallet</string>
+    <string name="title_nearby">Nearby</string>
+    <string name="title_profile">Profile</string>
+
+    <string name="searchbar_hint">Search</string>
+    <string name="google_maps_key">AIzaSyC_MOrwAN-k3qPtc5HSiLMRfh4VeeNDWWo</string>
+</resources>
