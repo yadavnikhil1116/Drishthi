@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Geocoder geocoder = new Geocoder(this);
         try {
             ArrayList<Address> addressArrayList = (ArrayList<Address>) geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-            Toast.makeText(this, addressArrayList.get(0).getAddressLine(0), Toast.LENGTH_LONG).show();
+//            Toast.makeText(this, addressArrayList.get(0).getMaxAddressLineIndex(), Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

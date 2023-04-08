@@ -7,20 +7,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LogInActivity"
+    android:background="@drawable/background"
     >
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:lottie_rawRes="@raw/loginlottie"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        />
+
+    <TextView
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="30dp"
+        android:layout_height="wrap_content"
+        android:text="Username"
+        android:textColor="@color/ink_darkest"
+        />
+
+    <EditText
+        android:id="@+id/edttxt1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your Username..."
+        android:inputType="text"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="20dp"
+        android:layout_marginHorizontal="30dp"
+        />
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="180dp"
-        android:text="Login"
-        android:paddingVertical="35dp"
-        android:textAlignment="center"
-        android:textSize="60sp"
-        android:fontFamily="@font/urbanist_bold"
-        android:textColor="@color/ink_dark"
-        android:layout_marginBottom="25dp"
+        android:layout_marginHorizontal="30dp"
+        android:layout_height="wrap_content"
+        android:text="Phone Number"
+        android:textColor="@color/ink_darkest"
         />
 
+    <EditText
+        android:id="@+id/edttxt2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your Number..."
+        android:inputType="phone"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="20dp"
+        android:layout_marginHorizontal="30dp"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="30dp"
+        android:layout_height="wrap_content"
+        android:text="Permanent Address"
+        android:textColor="@color/ink_darkest"
+        />
+
+    <EditText
+        android:id="@+id/edttxt3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter your Address..."
+        android:inputType="textMultiLine"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="20dp"
+        android:layout_marginHorizontal="30dp"
+        />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/googleSignUpbtn"

@@ -31,9 +31,10 @@ public class LogInActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     private Button googleSignUpbtn;
-    private  String Name, Number, Email,UID;
+    private  String Username, Name, Number, Email, Address, UID;
     private FirebaseDatabase db;
     private DatabaseReference reference;
+    private EditText edttxt1, edttxt2, edttxt3;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -41,6 +42,13 @@ public class LogInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
         googleSignUpbtn = findViewById(R.id.googleSignUpbtn);
+        edttxt1 = findViewById(R.id.edttxt1);
+        edttxt2 = findViewById(R.id.edttxt2);
+        edttxt3 = findViewById(R.id.edttxt3);
+
+        Username = edttxt1.getText().toString();
+        Number = edttxt2.getText().toString();
+        Address = edttxt3.getText().toString();
 
         mAuth = FirebaseAuth.getInstance();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -110,14 +118,14 @@ public class LogInActivity extends AppCompatActivity {
 
     public boolean Database(){
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        Username = edttxt1.getText().toString();
         Name = currentUser.getDisplayName();
-        Log.d("Name", Name);
-        Number = currentUser.getPhoneNumber();
-        Log.d("Number", Number);
+        Number = edttxt2.getText().toString();
         Email = currentUser.getEmail();
+        Address = edttxt3.getText().toString();
         UID = currentUser.getUid();
-        if(!(Name.isEmpty() || Number.isEmpty() || Email.isEmpty())){
-            Users users = new Users(Name, Number, Email, UID);
+        if(!(Username.isEmpty() || Number.isEmpty() || Address.isEmpty())){
+            Users users = new Users(Username, Name, Number, Email,Address, UID);
             db = FirebaseDatabase.getInstance();
             reference = db.getReference("Users");
             reference.child(UID).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
