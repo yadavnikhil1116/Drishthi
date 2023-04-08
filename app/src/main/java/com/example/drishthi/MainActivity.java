@@ -1,6 +1,7 @@
 package com.example.drishthi;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -22,22 +23,33 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int PERMISSION_CODE = 100;
+    private FirebaseAuth mAuth;
+    private FirebaseUser currentUser;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location currentLocation;
+    private DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         CheckLocationPermission();
     }
@@ -69,6 +81,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 if (location != null) {
                     Log.d("location", String.valueOf(location));
                     currentLocation = location;
+                    HashMap l = new HashMap();
+                    l.put("Latitude", currentLocation.getLatitude());
+                    l.put("Longitude", currentLocation.getLongitude());
+                    databaseReference = FirebaseDatabase.getInstance().getReference("Users");
+                    databaseReference.child(currentUser.getUid()).updateChildren(l).addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            Toast.makeText(MainActivity.this, "Location updated...", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                     Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
                     assert supportMapFragment != null;

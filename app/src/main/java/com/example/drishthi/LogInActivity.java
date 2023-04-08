@@ -2,7 +2,9 @@ package com.example.drishthi;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.location.Address;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,22 +23,23 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class LogInActivity extends AppCompatActivity {
-
-    private EditText nametxt, numbertxt;
     private static final int RC_SIGN_IN = 1;
-    GoogleSignInClient mGoogleSignInClient;
+    private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     private Button googleSignUpbtn;
+    private  String Name, Number, Email,UID;
+    private FirebaseDatabase db;
+    private DatabaseReference reference;
 
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-        nametxt = (EditText) findViewById(R.id.nametxt);
-        numbertxt = (EditText) findViewById(R.id.numbertxt);
         googleSignUpbtn = findViewById(R.id.googleSignUpbtn);
 
         mAuth = FirebaseAuth.getInstance();
@@ -75,26 +78,23 @@ public class LogInActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        mAuth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
-                            String Nametxt = nametxt.getText().toString();
-                            String Numbertxt = numbertxt.getText().toString();
-                            if(Nametxt != null && Numbertxt != null){
+                            if(Database()){
                                 Intent i = new Intent(LogInActivity.this,MainActivity.class);
                                 startActivity(i);
                                 finish();
                             }else {
-                                Toast.makeText(LogInActivity.this, "Please fill the details...", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LogInActivity.this, "Database not updated...", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             Toast.makeText(LogInActivity.this,"Login failed",Toast.LENGTH_SHORT).show();
                         }
                     }
-                });
+        });
     }
 
     @Override
@@ -105,6 +105,30 @@ public class LogInActivity extends AppCompatActivity {
             Intent i = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(i);
             finish();
+        }
+    }
+
+    public boolean Database(){
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        Name = currentUser.getDisplayName();
+        Log.d("Name", Name);
+        Number = currentUser.getPhoneNumber();
+        Log.d("Number", Number);
+        Email = currentUser.getEmail();
+        UID = currentUser.getUid();
+        if(!(Name.isEmpty() || Number.isEmpty() || Email.isEmpty())){
+            Users users = new Users(Name, Number, Email, UID);
+            db = FirebaseDatabase.getInstance();
+            reference = db.getReference("Users");
+            reference.child(UID).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    Toast.makeText(LogInActivity.this, "Database Updated...", Toast.LENGTH_SHORT).show();
+                }
+            });
+            return true;
+        }else {
+            return false;
         }
     }
 }
