@@ -7,6 +7,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -39,18 +40,21 @@ import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final int PERMISSION_CODE = 100;
+    private static final int PERMISSION_CODE_MESSAGE = 101;
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location currentLocation;
     private DatabaseReference databaseReference;
-    private FloatingActionButton floatingActionButton;
+    private FloatingActionButton floatingActionButton, floatingActionButtonMessage;
+    private SmsManager smsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         floatingActionButton = findViewById(R.id.floatingActionButton);
+        floatingActionButtonMessage = findViewById(R.id.floatingActionButtonMessage);
 
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,10 +64,37 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        floatingActionButtonMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                checkSendPermission();
+            }
+        });
+
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         CheckLocationPermission();
+    }
+
+    private void checkSendPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS) == PackageManager.PERMISSION_GRANTED) {
+            sendMessage();
+        } else {
+            RequestSendPermission();
+        }
+    }
+
+    private void RequestSendPermission() {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.SEND_SMS}, PERMISSION_CODE_MESSAGE);
+    }
+
+    private void sendMessage() {
+        smsManager = SmsManager.getDefault();
+        String message = "My location: https://www.google.com/maps/search/?api=1&query=" + currentLocation.getLatitude() + "," + currentLocation.getLongitude();
+        String phoneNumber = "+91 8950186507";
+        smsManager.sendTextMessage (phoneNumber, null, message, null, null);
+        Toast.makeText(this, "Message Sended...", Toast.LENGTH_SHORT).show();
     }
 
     private void CheckLocationPermission() {
@@ -117,6 +148,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if(requestCode == PERMISSION_CODE){
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 fetchLocation();
+                Toast.makeText(this, "Permissions Accepted...", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(this, "Permissions Denied...", Toast.LENGTH_SHORT).show();
+            }
+        }
+        if(requestCode == PERMISSION_CODE_MESSAGE){
+            if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                sendMessage();
                 Toast.makeText(this, "Permissions Accepted...", Toast.LENGTH_SHORT).show();
             }else {
                 Toast.makeText(this, "Permissions Denied...", Toast.LENGTH_SHORT).show();
