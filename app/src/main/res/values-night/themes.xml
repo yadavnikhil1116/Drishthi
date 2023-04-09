@@ -18,4 +18,17 @@
 
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Screen">
+        <item name="android:background">@color/sky_white</item>
+    </style>
+
+    <style name="Text">
+        <item name="android:textColor">@color/sky_white</item>
+    </style>
+
+    <style name="Button">
+        <item name="android:background">@color/primary_base</item>
+        <item name="android:textColor">@color/sky_white</item>
+    </style>
 </resources>

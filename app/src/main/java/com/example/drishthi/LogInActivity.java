@@ -31,7 +31,6 @@ public class LogInActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     private Button googleSignUpbtn;
-    private  String Username, Name, Number, Email, Address, UID;
     private FirebaseDatabase db;
     private DatabaseReference reference;
     private EditText edttxt1, edttxt2, edttxt3;
@@ -46,10 +45,6 @@ public class LogInActivity extends AppCompatActivity {
         edttxt2 = findViewById(R.id.edttxt2);
         edttxt3 = findViewById(R.id.edttxt3);
 
-        Username = edttxt1.getText().toString();
-        Number = edttxt2.getText().toString();
-        Address = edttxt3.getText().toString();
-
         mAuth = FirebaseAuth.getInstance();
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -60,7 +55,15 @@ public class LogInActivity extends AppCompatActivity {
         googleSignUpbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SignIn();
+                String Username = edttxt1.getText().toString();
+                String Number = edttxt2.getText().toString();
+                String Address = edttxt3.getText().toString();
+
+                if(!(Username.isEmpty() || Number.isEmpty() || Address.isEmpty())){
+                    SignIn();
+                }else {
+                    Toast.makeText(LogInActivity.this, "All Details are required!!", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -118,12 +121,12 @@ public class LogInActivity extends AppCompatActivity {
 
     public boolean Database(){
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        Username = edttxt1.getText().toString();
-        Name = currentUser.getDisplayName();
-        Number = edttxt2.getText().toString();
-        Email = currentUser.getEmail();
-        Address = edttxt3.getText().toString();
-        UID = currentUser.getUid();
+        String Username = edttxt1.getText().toString();
+        String Name = currentUser.getDisplayName();
+        String Number = edttxt2.getText().toString();
+        String Email = currentUser.getEmail();
+        String Address = edttxt3.getText().toString();
+        String UID = currentUser.getUid();
         if(!(Username.isEmpty() || Number.isEmpty() || Address.isEmpty())){
             Users users = new Users(Username, Name, Number, Email,Address, UID);
             db = FirebaseDatabase.getInstance();

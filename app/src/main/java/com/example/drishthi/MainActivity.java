@@ -8,6 +8,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -42,11 +44,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient fusedLocationProviderClient;
     private Location currentLocation;
     private DatabaseReference databaseReference;
+    private FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        floatingActionButton = findViewById(R.id.floatingActionButton);
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(getApplicationContext(), ContactsActivity.class);
+                startActivity(i);
+            }
+        });
 
         mAuth = FirebaseAuth.getInstance();
         currentUser = mAuth.getCurrentUser();
@@ -91,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             Toast.makeText(MainActivity.this, "Location updated...", Toast.LENGTH_SHORT).show();
                         }
                     });
-                    Toast.makeText(getApplicationContext(), currentLocation.getLatitude() + "" + currentLocation.getLongitude(), Toast.LENGTH_SHORT).show();
                     SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
                     assert supportMapFragment != null;
                     supportMapFragment.getMapAsync(MainActivity.this);
@@ -119,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Geocoder geocoder = new Geocoder(this);
         try {
             ArrayList<Address> addressArrayList = (ArrayList<Address>) geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-//            Toast.makeText(this, addressArrayList.get(0).getMaxAddressLineIndex(), Toast.LENGTH_LONG).show();
+            Toast.makeText(this, addressArrayList.get(0).getAddressLine(0), Toast.LENGTH_LONG).show();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

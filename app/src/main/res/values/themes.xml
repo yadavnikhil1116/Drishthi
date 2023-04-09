@@ -26,4 +26,17 @@
     <style name="Theme.Drishthi.Launcher" parent="Theme.Drishthi">
         <item name="android:windowBackground">@drawable/bg_splash_screen</item>
     </style>
+
+    <style name="Screen">
+        <item name="android:background">@color/sky_white</item>
+    </style>
+    
+    <style name="Text">
+        <item name="android:textColor">@color/ink_darkest</item>
+    </style>
+
+    <style name="Button">
+        <item name="android:background">@drawable/button_bg</item>
+        <item name="android:textColor">@color/sky_white</item>
+    </style>
 </resources>
